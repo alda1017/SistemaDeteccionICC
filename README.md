@@ -1,4 +1,4 @@
-# Sistema de Detección de Insuficiencia Cardíaca Congestiva en Señales ECG
+# Sistema de Detección de Insuficiencia Cardíaca Congestiva en Señales ECG a Través de Aprendizaje Máquina
 
 Este proyecto es el trabajo final de Ingeniería Biomédica 2024. Es un **Sistema de Detección de Insuficiencia Cardíaca Congestiva (ICC)** en señales ECG mediante el uso de **Aprendizaje Automático**.
 
