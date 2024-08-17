@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Subir Archivos</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="/">Telemedicina 2024-1</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/privado/subir_archivo.html">Subir Archivos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/privado/archivos.html">Archivos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/privado/usuarios.html">Usuarios</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <h2 class="text-center mb-4">Subir Archivos</h2>
+      <form action="http://35.222.19.143:5001/subir-archivo" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+          <label for="archivo">Selecciona un archivo:</label>
+          <input type="file" id="archivo" name="archivo" class="form-control-file" multiple required>
+        </div>
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary">Subir Archivo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

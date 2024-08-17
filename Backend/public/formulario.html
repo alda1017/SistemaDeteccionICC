@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro de Usuarios</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+
+<div class="container mt-5">
+  <h2>Registro de Usuarios</h2>
+  <form id="registro-form">
+    <div class="form-group">
+      <label for="nombre">Nombre</label>
+      <input type="text" class="form-control" id="nombre" name="nombre" required>
+    </div>
+    <div class="form-group">
+      <label for="correo">Correo Electrónico</label>
+      <input type="email" class="form-control" id="correo" name="correo" required>
+    </div>
+    <div class="form-group">
+      <label for="password">Contraseña</label>
+      <input type="password" class="form-control" id="password" name="password" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Enviar</button>
+  </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#registro-form').submit(function(e) {
+      e.preventDefault();
+
+      $.ajax({
+        type: "POST",
+        url: "/enviar-datos",
+        data: {
+          nombre: $('#nombre').val(),
+          correo: $('#correo').val(),
+          password: $('#password').val(),
+        },
+        success: function(response) {
+          alert('Datos enviados con éxito');
+          window.location.href = '/login.html';
+        },
+        error: function() {
+          alert('Error al enviar los datos');
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
