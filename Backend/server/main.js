@@ -51,7 +51,7 @@ const upload = multer({ storage: storage });
 const pool = mysql.createPool({
     host: 'localhost',
     user: 'alda7',
-    password: 'fireStone!02resi2',
+    password: '******',
     database: 'telemed242',
     waitForConnections: true,
     connectionLimit: 10,
