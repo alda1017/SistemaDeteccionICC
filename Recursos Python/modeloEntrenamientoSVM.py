@@ -12,10 +12,8 @@ import seaborn as sns
 from sklearn.svm import SVC
 from sklearn.utils import shuffle
 from sklearn.metrics import confusion_matrix
-# #from sklearn.cross_validation import train_test_split
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-# from sklearn import metrics
 import matplotlib.pyplot as plt
 
 df = pd.read_csv('C:\\Users\\alda7\\Desktop\\mew data\\final_features_2.csv')
@@ -23,11 +21,9 @@ df = pd.read_csv('C:\\Users\\alda7\\Desktop\\mew data\\final_features_2.csv')
 # Separar las etiquetas
 Y = df['Class'].values
 
-# Eliminar la columna 'Class' del DataFrame para dejar solo las características
+# Eliminar la columna 'Class' del DataFrame
 X = df.drop(['Class'], axis=1).values
 
-# Shuffle and split the data into training and test set
-# =============================================================================
 X, Y = shuffle(X,Y)
 x_train = []
 y_train = []
@@ -134,19 +130,19 @@ for i in range (2) :
 
 conf_matrix = confusion_matrix(y_test, y_pred, labels=[0, 1])
 
-# Configurando la visualización con Seaborn
+# Configuracion de la visualizacion con Seaborn
 plt.figure(figsize=(10, 7))
 sns.heatmap(conf_matrix, annot=True, fmt="d", cmap='Blues', cbar_kws={'label': 'Escala'})
 plt.title('Matriz de Confusión de Clasificación')
 plt.xlabel('Etiqueta Predicha')
 plt.ylabel('Etiqueta Real')
 
-# Definir las marcas para los ejes x e y
+# marcas para los ejes x e y
 tick_marks = np.arange(len(['Normal', 'ICC'])) + 0.5
 
-plt.xticks(tick_marks, ['Normal', 'ICC'])  # Ajustar según las etiquetas
+plt.xticks(tick_marks, ['Normal', 'ICC'])
 plt.yticks(tick_marks, ['Normal', 'ICC'], rotation=0)
-plt.savefig('confusion_matrix.png')  # Guardar la imagen
+plt.savefig('confusion_matrix.png')
 plt.show()
 
 
