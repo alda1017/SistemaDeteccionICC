@@ -11,13 +11,13 @@ from sklearn.metrics import confusion_matrix, accuracy_score, classification_rep
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 from tensorflow.keras.optimizers import Adamax
 
-# Cargar el archivo CSV con las características
+# Cargar el archivo CSV con las caracteristicas
 df = pd.read_csv('C:\\Users\\alda7\\Desktop\\mew data\\final_features_2.csv')
 
 # Separar las etiquetas
 Y = df['Class'].values
 
-# Eliminar la columna 'Class' del DataFrame para dejar solo las características
+# Eliminar la columna Class del DataFrame
 X = df.drop(['Class'], axis=1).values
 
 # Mezclar y dividir los datos en conjunto de entrenamiento y prueba
@@ -57,19 +57,18 @@ print('Model Test Accuracy: %1.4f' % accuracy)
 # Hacer predicciones
 y_pred = (model.predict(x_test) > 0.5).astype("int32")
 
-# Calcular la precisión del modelo
+# Calcular la precision del modelo
 modelNNAccuracyScore = accuracy_score(y_test, y_pred)
 print('Model Prediction Accuracy: %1.4f' % (modelNNAccuracyScore))
 
-# Matriz de confusión y reporte de clasificación para el tipo de latido
+# Matriz de confusion y reporte de clasificacion para el tipo de latido
 print("Confusion Matrix:")
 cm_beat = confusion_matrix(y_test, y_pred)
 print(cm_beat)
 print("Classification Report:")
 print(classification_report(y_test, y_pred, zero_division=1))
 
-
-# Matriz de confusión
+# Matriz de confusion
 modelNNConfusionMatrix = confusion_matrix(y_test, y_pred, labels=[0, 1])
 print('\nConfusion matrix: Rows Actual class, Columns Predicted class.')
 print('Class_0 = %d, Class_1 = %d. \nTotal test samples %d.\n' % (np.sum(y_test == 0), np.sum(y_test == 1), y_test.shape[0]))
@@ -77,10 +76,8 @@ print(modelNNConfusionMatrix)
 
 # Guardar el modelo
 model.save('RN_model.h5')
-# joblib.dump(scaler, 'scaler_ecg.pk1')
 
-
-# Gráficas de rendimiento para el modelo de tipo de latido
+# Graficas de rendimiento para el modelo de tipo de latido
 plt.figure(figsize=(12, 5))
 plt.subplot(1, 2, 1)
 plt.plot(history.history['accuracy'])
@@ -90,7 +87,7 @@ plt.ylabel('Accuracy')
 plt.xlabel('Epoch')
 plt.legend(['Train', 'Validation'], loc='upper left')
 
-# Función para graficar la matriz de confusión
+# Funcion para graficar la matriz de confusion
 def plot_confusion_matrix(cm, classes, title='Confusion matrix', cmap=plt.cm.Blues):
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
     plt.title(title)
@@ -113,11 +110,10 @@ def plot_confusion_matrix(cm, classes, title='Confusion matrix', cmap=plt.cm.Blu
 # Nombres de las clases
 class_names = ['Normal', 'ICC']
 
-# Graficar la matriz de confusión
+# Graficar la matriz de confusion
 plt.figure(figsize=(10, 10))
 plot_confusion_matrix(cm_beat, class_names, title='Confusion Matrix for Classification')
 plt.show()
-
 
 # ===================
 #     Computar Sensibilidad, Especificidad, Prevalencia y VPP
@@ -134,7 +130,7 @@ for i in range(2):
     prevalence = (TP + FN) / (TP + FP + TN + FN)
     VPP = TP / (TP + FP)
 
-    # Imprimir las métricas
+    # Imprimir las metricas
     print(f"\nIndexes for class {i}:")
     print(f"Sensitivity: {sensitivity}")
     print(f"Specificity: {specificity}")
