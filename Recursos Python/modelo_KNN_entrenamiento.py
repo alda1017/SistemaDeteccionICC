@@ -16,13 +16,13 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
 
-# Cargar el archivo CSV con las características
+# Cargar el archivo CSV con las caracteristicas
 df = pd.read_csv('C:\\Users\\alda7\\Desktop\\mew data\\final_features_2.csv')
 
 # Separar las etiquetas
 Y = df['Class'].values
 
-# Eliminar la columna 'Class' del DataFrame para dejar solo las características
+# Eliminar la columna 'Class' del DataFrame
 X = df.drop(['Class'], axis=1).values
 
 # Mezclar y dividir los datos en conjunto de entrenamiento y prueba
@@ -112,7 +112,7 @@ for i in range(2):
     prevalence = (TP + FN) / (TP + FP + TN + FN)
     VPP = TP / (TP + FP)
 
-    # Imprimir las métricas
+    # Imprimir las metricas
     print(f"\nIndexes for class {i}:")
     print(f"Sensitivity: {sensitivity}")
     print(f"Specificity: {specificity}")
@@ -122,14 +122,14 @@ for i in range(2):
     
 conf_matrix = confusion_matrix(y_test, y_pred, labels=[0, 1])
 
-# Configurando la visualizacion con Seaborn
+# Configuracion la visualizacion con Seaborn
 plt.figure(figsize=(10, 7))
 sns.heatmap(conf_matrix, annot=True, fmt="d", cmap='Blues', cbar_kws={'label': 'Escala'})
 plt.title('Matriz de Confusión de Clasificación')
 plt.xlabel('Etiqueta Predicha')
 plt.ylabel('Etiqueta Real')
 
-# Definir las marcas para los ejes x e y
+# marcas para los ejes x e y
 tick_marks = np.arange(len(['Normal', 'ICC'])) + 0.5
 
 plt.xticks(tick_marks, ['Normal', 'ICC'])
