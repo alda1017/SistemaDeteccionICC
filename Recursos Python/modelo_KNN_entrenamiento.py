@@ -38,7 +38,7 @@ class0 = np.sum(y_test == 0)  # SANOS
 class1 = np.sum(y_test == 1)  # ENFERMOS
 
 # Definir y entrenar el modelo K-Nearest Neighbors
-n_neighbors = 5  # Puedes ajustar este parámetro
+n_neighbors = 5
 clf = KNeighborsClassifier(n_neighbors=n_neighbors)
 clf.fit(x_train, y_train)
 y_pred = clf.predict(x_test)
@@ -50,7 +50,7 @@ print('Model Test Accuracy: %1.4f' % (modelKNNScore))
 modelKNNAccuracyScore = accuracy_score(y_test, y_pred)
 print('Model Prediction Accuracy: %1.4f' % (modelKNNAccuracyScore))
 
-# Matriz de confusión
+# Matriz de confusion
 modelKNNConfusionMatrix = confusion_matrix(y_test, y_pred, labels=[0, 1])
 print('\nConfusion matrix: Rows Actual class, Columns Predicted class.')
 print('Class_0 = %d, Class_1 = %d. \nTotal test samples %d.\n' % (class0, class1, y_test.shape[0]))
@@ -122,7 +122,7 @@ for i in range(2):
     
 conf_matrix = confusion_matrix(y_test, y_pred, labels=[0, 1])
 
-# Configurando la visualización con Seaborn
+# Configurando la visualizacion con Seaborn
 plt.figure(figsize=(10, 7))
 sns.heatmap(conf_matrix, annot=True, fmt="d", cmap='Blues', cbar_kws={'label': 'Escala'})
 plt.title('Matriz de Confusión de Clasificación')
@@ -132,9 +132,9 @@ plt.ylabel('Etiqueta Real')
 # Definir las marcas para los ejes x e y
 tick_marks = np.arange(len(['Normal', 'ICC'])) + 0.5
 
-plt.xticks(tick_marks, ['Normal', 'ICC'])  # Ajustar según las etiquetas
+plt.xticks(tick_marks, ['Normal', 'ICC'])
 plt.yticks(tick_marks, ['Normal', 'ICC'], rotation=0)
-plt.savefig('confusion_matrix.png')  # Guardar la imagen
+plt.savefig('confusion_matrix.png')
 plt.show()
 
 
