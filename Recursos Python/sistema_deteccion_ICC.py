@@ -35,17 +35,14 @@ print("Signal length:", record.sig_len)
 
 
 def apply_filters(data, notch_freq, lowpass_freq, highpass_freq, fs, notch_Q=30, lowpass_order=1, highpass_order=5):
-    # Apply Notch filter
     b_notch, a_notch = iirnotch(notch_freq, notch_Q, fs)
     filtered_data = filtfilt(b_notch, a_notch, data)
     
-    # Apply high-pass filter with filtfilt for zero-phase
     nyquist_freq = 0.5 * fs
     norm_highpass_freq = highpass_freq / nyquist_freq
     b_high, a_high = butter(highpass_order, norm_highpass_freq, btype='high', analog=False)
     filtered_data = filtfilt(b_high, a_high, filtered_data)
     
-    # Apply low-pass filter with filtfilt for zero-phase
     norm_lowpass_freq = lowpass_freq / nyquist_freq
     b_low, a_low = butter(lowpass_order, norm_lowpass_freq, btype='low', analog=False)
     filtered_data = filtfilt(b_low, a_low, filtered_data)
@@ -57,7 +54,6 @@ def shannon_entropy(signal):
     signal = signal / np.sum(signal)
     return entropy(signal)
 
-# Función para calcular la entropía wavelet
 def wavelet_entropy(signal, wavelet='db4', level=4):
     coeffs = pywt.wavedec(signal, wavelet, level=level)
     energy = [np.sum(np.square(c)) for c in coeffs]
@@ -68,56 +64,43 @@ def wavelet_entropy(signal, wavelet='db4', level=4):
 
 fs = record.fs
 
-# FILTER SETUP
-notch_freq = 60  # Frequency to eliminate with the Notch filter (use 50 or 60 Hz depending on your region)
-lowpass_freq = 50  # Low pass filter cutoff frequency, in Hz
-highpass_freq = 0.5  # High pass filter cutoff frequency, in Hz
+notch_freq = 60
+lowpass_freq = 50
+highpass_freq = 0.5
 
-# EXTRACT THE SIGNAL
 signal = record.p_signal[:, 0]
 
-# Apply all filters
 ecg_filtered = apply_filters(signal, notch_freq, lowpass_freq, highpass_freq, fs)
 
-
-# Automated R-peak detection
 peak_distance = int(0.6 * fs)
 peak_height = np.max(ecg_filtered) * 0.5
 
 all_peaks, _ = find_peaks(ecg_filtered, distance=peak_distance, height=peak_height)
 
 
-# Boxcar window application
 sig_len = len(ecg_filtered)
-box_len = int(fs * 1)  # Boxcar window length to cover 1 second
-half_box_len = box_len // 2  # Half the length of the boxcar window
+box_len = int(fs * 1)
+half_box_len = box_len // 2
 
-# Define a threshold as a percentage of the R
-# peak amplitude to identify the start and end of the QRS
 threshold_percentage = 0.1  # 10%
 
 columnas = ['QRS_width', 'T_wave_amplitude', 'Shannon_entropy', 'Wavelet_entropy', 'Energy_scale']
 df = pd.DataFrame(columns=columnas)
 
-# Process each segment
 for i, sample in enumerate(all_peaks):
-    start_index = max(sample - half_box_len, 0)  # Start at least from index 0
-    end_index = min(start_index + box_len, sig_len)  # Do not go beyond the signal length
+    start_index = max(sample - half_box_len, 0)
+    end_index = min(start_index + box_len, sig_len)
 
-    # Extract the signal segment
     segment = np.zeros(box_len)
     actual_start_index = start_index if start_index + box_len <= sig_len else sig_len - box_len
     segment[:] = ecg_filtered[actual_start_index:end_index]
 
     distance = int(0.25 * fs)
     peaks, _ = find_peaks(segment, distance=distance)
-    # peaks = peaks[segment[peaks] > 0.8]
     peaks = peaks[segment[peaks] > 0.8 * np.max(segment)]
 
     if peaks.size > 0:
-        # print("Extraction")
         
-
         # ---------------------------------------------------------------------
         # PEAK AMPLITUDE
         # ---------------------------------------------------------------------
@@ -130,21 +113,14 @@ for i, sample in enumerate(all_peaks):
         # ---------------------------------------------------------------------
         threshold = peak_amplitude * threshold_percentage
 
-        # # Search backwards from the R peak to find the start of the QRS
         start_qrs = np.where(segment[:peaks[0]] < threshold)[0][-1] if np.any(segment[:peaks[0]] < threshold) else 0
 
-        # Search forward from the R peak to find the end of the QRS
         end_qrs = peaks[0] + np.where(segment[peaks[0]:] < threshold)[0][0] if np.any(
             segment[peaks[0]:] < threshold) else len(segment)
 
-        # Calculate the width of the QRS complex in samples
         qrs_width_samples = end_qrs - start_qrs
 
-        # Convert QRS width to time (seconds)
         qrs_width_secs = qrs_width_samples / fs
-        
-        # print(f"#1 Ancho del QRS (segundos): {qrs_width_secs}")
-        
     
         #---------------------------------------------------------------------
         # CARACTERISTICA 2 / AMPLITUD ONDA T
@@ -194,12 +170,9 @@ for i, sample in enumerate(all_peaks):
         
         t_wave_amplitude, t_wave_peak_index = find_t_wave(segment, end_qrs, fs, 0.2, 0.4)
         
-        # Si no se detecta la onda T en el rango inicial o la amplitud no es más negativa que -0.1 y no es más positiva que 0.1, ajustar el rango
         if t_wave_amplitude == 0 or (t_wave_amplitude > -0.15 and t_wave_amplitude < 0.1):
             t_wave_amplitude, t_wave_peak_index = find_t_wave(segment, end_qrs, fs, 0.1, 0.2)
             
-            
-        # print(f"#2 Wave t amplitude: {t_wave_amplitude}")
         
         # plt.figure(figsize=(10, 4))
         # plt.plot(segment, label='ECG')
@@ -219,23 +192,17 @@ for i, sample in enumerate(all_peaks):
         
         # Calcular la entropía de Shannon del segmento
         shannon_ent = shannon_entropy(segment)
-        # print(f"#3 Entropía de Shannon: {shannon_ent}")
 
-        
-        # Calcular la entropía wavelet del segmento
         wavelet_ent = wavelet_entropy(segment)
-        # print(f"#4 Entropía Wavelet: {wavelet_ent}")
         
         #---------------------------------------------------------------------
         # CARACTERISTICA / distribución de energía
         #---------------------------------------------------------------------
         
-        # Calcular el escalograma usando la transformada wavelet continua
         scales = np.arange(1, 128)
         coefficients, frequencies = pywt.cwt(segment, scales, 'cmor')
         
         band_energy = np.sum(np.abs(coefficients[0:127])**2)
-        # print(f"#5 Energy_scale: {band_energy}")
         
         # Graficar el escalograma
         # plt.figure(figsize=(10, 4))
